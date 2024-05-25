@@ -133,7 +133,16 @@ const Login = () => {
           </Form>
         </div>
       </div>
-      <div className="hidden lg:flex w-full min-h-screen bg-primary"></div>
+      <div className="hidden lg:flex flex-col justify-center items-center w-full min-h-screen bg-primary">
+        <div className="">
+          <Image
+            src="/images/stat.svg"
+            alt="send 24"
+            width={400}
+            height={400}
+          />
+        </div>
+      </div>
     </main>
   );
 };
