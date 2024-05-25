@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -29,6 +31,7 @@ const formSchema = z.object({
 type FormValues = z.input<typeof formSchema>;
 
 const Login = () => {
+  const [disabled, setDisabled] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,6 +41,7 @@ const Login = () => {
   });
 
   const handleSubmit = async (values: FormValues) => {
+    setDisabled(true);
     try {
       const options = {
         method: "POST",
@@ -59,13 +63,15 @@ const Login = () => {
       console.log(data);
       if (data.status === "error") {
         toast.error(data.message);
+        setDisabled(false);
       } else {
         toast.success(data.message);
-        localStorage.setItem("authUser", data.data.token)
-        // window.location.href = `/`
+        localStorage.setItem("authUser", data.data.token);
+        window.location.href = `/`;
       }
     } catch (error: any) {
       toast.error(error.message);
+      setDisabled(false);
     }
   };
 
@@ -78,7 +84,7 @@ const Login = () => {
           width={119}
           height={31}
         />
-        <h2 className="mt-5">Welcome Back</h2>
+        <h2 className="my-8">Welcome Back</h2>
 
         <div className="w-3/4 m-8">
           <Form {...form}>
@@ -116,8 +122,12 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Submit
+              <Button type="submit" className="w-full" disabled={disabled}>
+                {disabled ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : (
+                  "Submit"
+                )}
               </Button>
             </form>
           </Form>
